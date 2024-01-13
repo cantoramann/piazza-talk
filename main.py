@@ -2,6 +2,8 @@ import scrape
 import db
 
 def main():
-    scrape.scrape()
+    # scrape.scrape()
     db.setup_db()
     db.run_search_loop()
+
+main()

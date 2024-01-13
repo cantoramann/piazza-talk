@@ -52,7 +52,6 @@ def insert_posts_to_db(posts):
 
 
 def search(query_text):
-    global collection
     try:
         response = collection.query.near_text(
             query=query_text,
@@ -78,27 +77,27 @@ def run_search_loop():
             print("Query response:", response)
 
 
-def create_collection():
+def get_collection():
     global collection
-    client.collections.create(
-        name=class_name,
-        vectorizer_config=wvc.Configure.Vectorizer.text2vec_openai(),
-        generative_config=wvc.Configure.Generative.openai(),
-        properties=[
-            wvc.Property(name="metadata", data_type=wvc.DataType.TEXT),
-            wvc.Property(name="content", data_type=wvc.DataType.TEXT),
-        ]
-    )
-    collection = client.collections.get(class_name)
-
-
-def setup_db():
-    create_collection()
-    posts_to_insert = process_posts()
-    insert_posts_to_db(posts_to_insert)
+    try:
+        collection = client.collections.get(class_name)
+    except Exception as e:
+        client.collections.create(
+            name=class_name,
+            vectorizer_config=wvc.Configure.Vectorizer.text2vec_openai(),
+            generative_config=wvc.Configure.Generative.openai(),
+            properties=[
+                wvc.Property(name="metadata", data_type=wvc.DataType.TEXT),
+                wvc.Property(name="content", data_type=wvc.DataType.TEXT),
+            ]
+        )
+        collection = client.collections.get(class_name)
+        posts_to_insert = process_posts()
+        insert_posts_to_db(posts_to_insert)
 
 
 def run_db():
+    global collection
     try:
         collection = client.collections.get(class_name)
         print("Collection found in Docker volume. Starting...")
@@ -108,3 +107,5 @@ def run_db():
         setup_db()
 
 
+def setup_db():
+    get_collection()
