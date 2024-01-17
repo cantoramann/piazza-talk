@@ -1,9 +1,9 @@
 import scrape
-import db
+import post_loader
 
 def main():
     # scrape.scrape()
-    db.setup_db()
-    db.run_search_loop()
+    post_loader.setup_db()
+    post_loader.run_search_loop()
 
 main()
