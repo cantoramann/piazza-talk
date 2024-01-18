@@ -1,3 +1,4 @@
 posts/
 __pycache__
 .env
+.data/
