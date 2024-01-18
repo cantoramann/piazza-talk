@@ -4,8 +4,8 @@ import requests
 import utils.reader as utils
 import errors
 from errors import InvalidPostError
-import markdown_generator
-from markdown_generator import MarkdownGenerator
+import file_writer
+from file_writer import FileWriter
 
 class ClassReader():
     def __init__(self, class_url, role='instructor'):
@@ -18,14 +18,18 @@ class ClassReader():
     def create_paths(self):
         data_dir = f"/class_data/{self.class_url}"
         raw_dir = f"{data_dir}/raw"
+        metadata_dir = f"{data_dir}/metadata"
         embeddings_dir = f"{data_dir}/embeddings"
         # Create the raw directory if it doesn't exist
         if not os.path.exists(raw_dir):
             os.makedirs(raw_dir)
+        # Create the metadata directory if it doesn't exist
+        if not os.path.exists(metadata_dir):
+            os.makedirs(metadata_dir)
         # Create the embeddings directory if it doesn't exist
         if not os.path.exists(embeddings_dir):
             os.makedirs(embeddings_dir)
-        return (raw_dir, embeddings_dir)
+        return (raw_dir, metadata_dir, embeddings_dir)
 
 
     def prepare_config(self):
@@ -131,8 +135,8 @@ class ClassReader():
 
         self.current_post_id = 1
 
-        # Init markdown generator
-        self.markdown_generator = MarkdownGenerator()
+        # Init file writer
+        self.file_writer = FileWriter()
 
         while self.should_continue_reading():
             try:
@@ -179,8 +183,8 @@ class ClassReader():
                     'post_tags': post_tags
                 }
 
-                # Generate markdown
-                markdown = self.markdown_generator.generate_markdown(self.file_paths[0], post_data)
+                # Generate post files
+                self.file_writer.write_post_data(raw_dir=self.file_paths[0], metadata_dir=self.file_paths[1], post_data=post_data)
 
             except InvalidPostError as e:
                 print(e)
