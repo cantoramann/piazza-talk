@@ -1,5 +1,7 @@
 # Piazza Scraper README.md
 
+- Updated README in progress. Legacy README is below.
+
 ## Overview
 
 The Piazza Scraper is a tool designed for instructors to extract posts, questions, and other relevant information from Piazza, a popular Q&A platform used in academic settings. This script iterates through post IDs, collects data, and writes content to text files within a specified directory.
