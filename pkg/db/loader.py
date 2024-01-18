@@ -14,7 +14,7 @@ For now, only the OpenAI embedding models will be implemented.
 import os
 import json
 import logging
-import config_manager
+# import config_manager
 import env_manager
 
 class DatabaseLoader():

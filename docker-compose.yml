@@ -23,12 +23,12 @@ services:
       - weaviate_data:/var/lib/weaviate
     restart: on-failure
 
-  streamlit-app:
-    build: .
-    ports:
-      - "8501:8501"
-    volumes:
-      - weaviate_data:/piazza_data
+  # streamlit-app:
+  #   build: .
+  #   ports:
+  #     - "8501:8501"
+  #   volumes:
+  #     - weaviate_data:/piazza_data
 
 volumes:
   weaviate_data:

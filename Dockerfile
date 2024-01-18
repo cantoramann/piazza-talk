@@ -20,4 +20,4 @@ EXPOSE 8501
 ENV NAME World
 
 # Run app.py when the container launches
-CMD ["streamlit", "run", "pkg/app.py"]
+CMD ["python", "pkg/cli/main.py"]
