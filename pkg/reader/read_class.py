@@ -2,9 +2,7 @@ import os
 import env_manager
 import requests
 import utils.reader as utils
-import errors
 from errors import InvalidPostError
-import file_writer
 from file_writer import FileWriter
 
 class ClassReader():
