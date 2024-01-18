@@ -6,15 +6,15 @@ from errors import InvalidPostError
 from file_writer import FileWriter
 
 class ClassReader():
-    def __init__(self, class_url, role='instructor'):
-        if class_url is None:
+    def __init__(self, class_path, role='instructor'):
+        if class_path is None:
             raise ValueError('Class url cannot be None')
-        self.class_url = class_url
+        self.class_path = class_path
         self.role = role
 
 
     def create_paths(self):
-        data_dir = f"/class_data/{self.class_url}"
+        data_dir = f"/class_data/{self.class_path}"
         raw_dir = f"{data_dir}/raw"
         metadata_dir = f"{data_dir}/metadata"
         embeddings_dir = f"{data_dir}/embeddings"
@@ -41,30 +41,30 @@ class ClassReader():
 
     def prepare_headers(self):
         headers = {
-            'authority': env_manager.get('authority'),
-            'accept':  env_manager.get('accept'),
-            'accept-language':  env_manager.get('accept_language'),
-            'content-type':  env_manager.get('content_type'),
-            'csrf-token':  env_manager.get('csrf_token'),
-            'origin': env_manager.get('origin'),
-            'sec-ch-ua': env_manager.get('sec_ch_ua'),
-            'sec-ch-ua-mobile': env_manager.get('sec_ch_ua_mobile'),
-            'sec-ch-ua-platform': env_manager.get('sec_ch_ua_platform'),
-            'sec-fetch-dest': env_manager.get('sec_fetch_dest'),
-            'sec-fetch-mode': env_manager.get('sec_fetch_mode'),
-            'sec-fetch-site': env_manager.get('sec_fetch_site'),
-            'user-agent': env_manager.get('user_agent'),
+            'authority': env_manager.load_env('authority'),
+            'accept':  env_manager.load_env('accept'),
+            'accept-language':  env_manager.load_env('accept_language'),
+            'content-type':  env_manager.load_env('content_type'),
+            'csrf-token':  env_manager.load_env('csrf_token'),
+            'origin': env_manager.load_env('origin'),
+            'sec-ch-ua': env_manager.load_env('sec_ch_ua'),
+            'sec-ch-ua-mobile': env_manager.load_env('sec_ch_ua_mobile'),
+            'sec-ch-ua-platform': env_manager.load_env('sec_ch_ua_platform'),
+            'sec-fetch-dest': env_manager.load_env('sec_fetch_dest'),
+            'sec-fetch-mode': env_manager.load_env('sec_fetch_mode'),
+            'sec-fetch-site': env_manager.load_env('sec_fetch_site'),
+            'user-agent': env_manager.load_env('user_agent'),
         }
         return headers
 
 
     def prepare_cookies(self):
         cookies = {
-            'session_id': env_manager.get('session_id'),
-            'last_piaz_user': env_manager.get('last_piaz_user'),
-            'AWSALB': env_manager.get('AWSALB'),
-            'AWSALBCORS': env_manager.get('AWSALBCORS'),
-            'piazza_session': env_manager.get('piazza_session'),
+            'session_id': env_manager.load_env('session_id'),
+            'last_piaz_user': env_manager.load_env('last_piaz_user'),
+            'AWSALB': env_manager.load_env('AWSALB'),
+            'AWSALBCORS': env_manager.load_env('AWSALBCORS'),
+            'piazza_session': env_manager.load_env('piazza_session'),
         }
         return cookies
 
@@ -79,7 +79,7 @@ class ClassReader():
         json_params = {
             'method': 'content.get',
             'params': {
-                'nid': env_manager.get("STUDENT_NID"),
+                'nid': env_manager.load_env("STUDENT_NID"),
                 'student_view': None,
             }
         }
@@ -88,7 +88,7 @@ class ClassReader():
 
     def prepare_post_retrieval(self):
         # Make sure that the retrieval post id is updated
-        self.headers['referer'] = f"{env_manager.get('referer_base')}{self.current_post_id}"
+        self.headers['referer'] = f"{env_manager.load_env('referer_base')}{self.current_post_id}"
         self.json_params['params']['cid'] = str(self.current_post_id)
 
 
@@ -122,10 +122,10 @@ class ClassReader():
 
     def read(self):
         # If the number of posts to read is specified, from 1 to N inclusive, this will be used for failure handling
-        if env_manager.get('max_length') is not None:
-            self.max_length = int(env_manager.get('max_length'))
-        elif env_manager.get('convergence_threshold') is not None and env_manager.get('convergence_threshold') > 0:
-            self.convergence_threshold = int(env_manager.get('convergence_threshold'))
+        if env_manager.load_env('max_length') is not None:
+            self.max_length = int(env_manager.load_env('max_length'))
+        elif env_manager.load_env('convergence_threshold') is not None and env_manager.load_env('convergence_threshold') > 0:
+            self.convergence_threshold = int(env_manager.load_env('convergence_threshold'))
         else:
             self.convergence_threshold = 10 # Default
         
